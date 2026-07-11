@@ -1,6 +1,5 @@
 import { nanoid } from "nanoid";
 import type { BriefField, ProposalSection } from "@/types";
-import { CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/contact";
 import { generateProposalSecure } from "./generation";
 
 export function generateToken(): string {
@@ -121,8 +120,7 @@ export function buildDefaultProposalSections(): ProposalSection[] {
       id: "cta",
       type: "cta",
       title: "Готовы начать?",
-      content:
-        `Свяжитесь с нами для обсуждения деталей и старта проекта.\n\nТелефон: ${CONTACT_PHONE}\nПочта: ${CONTACT_EMAIL}`,
+      content: "Свяжитесь со мной для обсуждения деталей и старта проекта.",
     },
   ];
 }
