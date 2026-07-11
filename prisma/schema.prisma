@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  token       String   @unique
+  title       String
+  description String   @default("")
+  clientName  String
+  clientEmail String   @default("")
+  clientPhone String   @default("")
+  clientCompany String @default("")
+  status      String   @default("draft")
+  briefFields String   @default("[]")
+  briefAnswers String  @default("{}")
+  encryptedBriefPii String @default("{}")
+  pdConsentAt DateTime?
+  proposalSections String @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+}
