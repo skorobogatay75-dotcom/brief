@@ -8,21 +8,36 @@ datasource db {
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  token       String   @unique
-  title       String
-  description String   @default("")
-  clientName  String
-  clientEmail String   @default("")
-  clientPhone String   @default("")
-  clientCompany String @default("")
-  status      String   @default("draft")
-  briefFields String   @default("[]")
-  briefAnswers String  @default("{}")
-  encryptedBriefPii String @default("{}")
-  pdConsentAt DateTime?
-  proposalSections String @default("[]")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  completedAt DateTime?
+  id               String           @id @default(cuid())
+  token            String           @unique
+  title            String
+  description      String           @default("")
+  clientName       String
+  clientEmail      String           @default("")
+  clientPhone      String           @default("")
+  clientCompany    String           @default("")
+  status           String           @default("draft")
+  briefFields      String           @default("[]")
+  briefAnswers     String           @default("{}")
+  encryptedBriefPii String          @default("{}")
+  pdConsentAt      DateTime?
+  proposalSections String           @default("[]")
+  dealAmount       Float            @default(0)
+  dealProbability  Int              @default(0)
+  notes            String           @default("")
+  reminderAt       DateTime?
+  reminderNote     String           @default("")
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  completedAt      DateTime?
+  history          ProjectHistory[]
+}
+
+model ProjectHistory {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  action    String
+  details   String   @default("")
+  createdAt DateTime @default(now())
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ProposalSection } from "@/types";
+import { CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/contact";
 
 interface ProposalData {
   title: string;
@@ -130,12 +131,10 @@ function SectionRenderer({ section }: { section: ProposalSection }) {
             <div className="text-lg text-indigo-100 mb-8 space-y-2">
               {renderMarkdown(section.content)}
             </div>
-            <a
-              href="mailto:"
-              className="inline-flex items-center px-8 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-indigo-50 transition-colors"
-            >
-              Связаться с нами
-            </a>
+            <div className="text-lg text-indigo-100 space-y-2">
+              <p>Телефон: {CONTACT_PHONE}</p>
+              <p>Почта: {CONTACT_EMAIL}</p>
+            </div>
           </div>
         </section>
       );

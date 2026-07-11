@@ -32,6 +32,13 @@ export type ProjectStatus =
   | "brief_completed"
   | "proposal_ready";
 
+export interface ProjectHistoryEntry {
+  id: string;
+  action: string;
+  details: string;
+  createdAt: string;
+}
+
 export interface Project {
   id: string;
   token: string;
@@ -47,6 +54,11 @@ export interface Project {
   /** Расшифрованные ПДн из брифа (только для админа) */
   piiAnswers: Record<string, string>;
   proposalSections: ProposalSection[];
+  dealAmount: number;
+  dealProbability: number;
+  notes: string;
+  reminderAt: string | null;
+  reminderNote: string;
   pdConsentAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -73,13 +85,20 @@ export interface UpdateProjectInput {
   status?: ProjectStatus;
   briefFields?: BriefField[];
   proposalSections?: ProposalSection[];
+  dealAmount?: number;
+  dealProbability?: number;
+  notes?: string;
+  reminderAt?: string | null;
+  reminderNote?: string;
+  publishProposal?: boolean;
+  regenerateProposal?: boolean;
 }
 
 export const STATUS_LABELS: Record<ProjectStatus, string> = {
   draft: "Черновик",
   brief_sent: "Бриф отправлен",
   brief_completed: "Бриф заполнен",
-  proposal_ready: "КП готово",
+  proposal_ready: "КП отправлено",
 };
 
 export const STATUS_COLORS: Record<ProjectStatus, string> = {

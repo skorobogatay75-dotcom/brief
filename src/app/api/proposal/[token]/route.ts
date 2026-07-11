@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAuthenticated } from "@/lib/auth";
 import { prisma, serializeProject } from "@/lib/db";
 import { generateProposalFromAnswers } from "@/lib/utils";
 
@@ -13,13 +14,11 @@ export async function GET(_request: NextRequest, { params }: Params) {
   }
 
   const serialized = serializeProject(project);
+  const authenticated = await isAuthenticated();
 
-  if (
-    serialized.status !== "brief_completed" &&
-    serialized.status !== "proposal_ready"
-  ) {
+  if (serialized.status !== "proposal_ready" && !authenticated) {
     return NextResponse.json(
-      { error: "Коммерческое предложение ещё не сформировано" },
+      { error: "Коммерческое предложение ещё не опубликовано" },
       { status: 403 }
     );
   }

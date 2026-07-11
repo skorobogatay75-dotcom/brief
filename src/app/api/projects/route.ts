@@ -6,6 +6,7 @@ import {
   generateToken,
   buildDefaultProposalSections,
 } from "@/lib/utils";
+import { logProjectHistory } from "@/lib/history";
 import type { CreateProjectInput } from "@/types";
 
 export async function GET() {
@@ -58,6 +59,8 @@ export async function POST(request: NextRequest) {
       proposalSections: JSON.stringify(buildDefaultProposalSections()),
     },
   });
+
+  await logProjectHistory(project.id, "created", `Создан проект «${project.title}»`);
 
   return NextResponse.json(serializeProject(project), { status: 201 });
 }

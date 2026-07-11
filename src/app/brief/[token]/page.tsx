@@ -13,6 +13,7 @@ interface BriefData {
   clientDisplayName: string;
   briefFields: BriefField[];
   isCompleted: boolean;
+  isProposalPublished: boolean;
 }
 
 export default function BriefPage({
@@ -77,7 +78,7 @@ export default function BriefPage({
     const data = await res.json();
     if (res.ok) {
       setSuccess(true);
-      window.location.href = data.proposalUrl;
+      setSubmitting(false);
     } else {
       setError(data.error || "Ошибка отправки");
       setSubmitting(false);
@@ -105,18 +106,24 @@ export default function BriefPage({
 
   if (!brief) return null;
 
-  if (brief.isCompleted && !success) {
+  if (success || (brief.isCompleted && !success)) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-indigo-50">
         <div className="bg-white rounded-2xl border border-border shadow-lg p-8 max-w-md text-center">
           <div className="text-4xl mb-4">✅</div>
-          <h1 className="text-xl font-bold mb-2">Бриф уже заполнен</h1>
+          <h1 className="text-xl font-bold mb-2">
+            {success ? "Бриф отправлен!" : "Бриф уже заполнен"}
+          </h1>
           <p className="text-muted mb-6">
-            Спасибо! Ваше коммерческое предложение уже сформировано.
+            {brief.isProposalPublished
+              ? "Спасибо! Ваше коммерческое предложение готово."
+              : "Спасибо! Мы получили ваш бриф и готовим коммерческое предложение. Мы свяжемся с вами, когда оно будет готово."}
           </p>
-          <a href={`/proposal/${brief.token}`}>
-            <Button className="w-full">Посмотреть предложение</Button>
-          </a>
+          {brief.isProposalPublished && (
+            <a href={`/proposal/${brief.token}`}>
+              <Button className="w-full">Посмотреть предложение</Button>
+            </a>
+          )}
         </div>
       </div>
     );
@@ -222,12 +229,12 @@ export default function BriefPage({
             className="w-full"
             disabled={submitting || !pdConsent}
           >
-            {submitting ? "Формируем предложение..." : "Отправить бриф"}
+            {submitting ? "Отправка..." : "Отправить бриф"}
           </Button>
 
           <p className="text-xs text-center text-muted">
-            Персональные данные защищены и не передаются в ИИ. После отправки
-            автоматически сформируется коммерческое предложение.
+            Персональные данные защищены и не передаются в ИИ. После отправки мы
+            подготовим коммерческое предложение и направим вам ссылку.
           </p>
         </form>
       </div>

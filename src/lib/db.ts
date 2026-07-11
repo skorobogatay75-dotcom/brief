@@ -45,6 +45,11 @@ export function serializeProject(row: {
   encryptedBriefPii: string;
   pdConsentAt: Date | null;
   proposalSections: string;
+  dealAmount: number;
+  dealProbability: number;
+  notes: string;
+  reminderAt: Date | null;
+  reminderNote: string;
   createdAt: Date;
   updatedAt: Date;
   completedAt: Date | null;
@@ -73,6 +78,11 @@ export function serializeProject(row: {
     briefAnswers: parseJson<Record<string, string>>(row.briefAnswers, {}),
     piiAnswers,
     proposalSections: parseJson<ProposalSection[]>(row.proposalSections, []),
+    dealAmount: row.dealAmount,
+    dealProbability: row.dealProbability,
+    notes: row.notes,
+    reminderAt: row.reminderAt?.toISOString() ?? null,
+    reminderNote: row.reminderNote,
     pdConsentAt: row.pdConsentAt?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),

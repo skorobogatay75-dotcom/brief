@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, serializeProject } from "@/lib/db";
 import { generateProposalFromAnswers } from "@/lib/utils";
+import { logProjectHistory } from "@/lib/history";
 import {
   splitBriefAnswers,
   maskNameForDisplay,
@@ -36,6 +37,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
     isCompleted:
       serialized.status === "brief_completed" ||
       serialized.status === "proposal_ready",
+    isProposalPublished: serialized.status === "proposal_ready",
     privacyNotice: {
       encrypted: true,
       aiExcluded: true,
@@ -104,15 +106,22 @@ export async function POST(request: NextRequest, { params }: Params) {
       briefAnswers: JSON.stringify(publicAnswers),
       encryptedBriefPii: JSON.stringify(encryptBriefPii(piiAnswers)),
       proposalSections: JSON.stringify(proposalSections),
-      status: "proposal_ready",
+      status: "brief_completed",
       completedAt: new Date(),
       pdConsentAt: new Date(),
     },
   });
 
+  await logProjectHistory(
+    project.id,
+    "brief_completed",
+    "Клиент заполнил бриф, КП сгенерировано для проверки"
+  );
+  await logProjectHistory(project.id, "proposal_generated", "Черновик КП создан автоматически");
+
   return NextResponse.json({
     success: true,
-    proposalUrl: `/proposal/${token}`,
+    message: "Спасибо! Мы получили ваш бриф и готовим коммерческое предложение.",
     project: serializeProject(updated),
   });
 }

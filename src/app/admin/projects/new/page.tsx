@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import type { BriefField } from "@/types";
 import { AdminLayout } from "@/components/AdminLayout";
+import { BriefFieldEditor } from "@/components/BriefFieldEditor";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { FieldWrapper, Input, Textarea } from "@/components/ui/Input";
+import { DEFAULT_BRIEF_FIELDS } from "@/lib/utils";
 
 export default function NewProjectPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [briefFields, setBriefFields] = useState<BriefField[]>(
+    () => DEFAULT_BRIEF_FIELDS.map((field) => ({ ...field }))
+  );
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -32,7 +38,7 @@ export default function NewProjectPage() {
     const res = await fetch("/api/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, briefFields }),
     });
 
     if (res.ok) {
@@ -47,10 +53,10 @@ export default function NewProjectPage() {
 
   return (
     <AdminLayout>
-      <Card className="max-w-2xl">
+      <Card className="max-w-3xl">
         <CardHeader
           title="Новый проект"
-          description="Создайте проект и получите ссылку на бриф для клиента"
+          description="Заполните данные, настройте вопросы брифа и отправьте ссылку клиенту"
         />
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -109,6 +115,16 @@ export default function NewProjectPage() {
                 />
               </FieldWrapper>
             </div>
+          </div>
+
+          <div className="border-t border-border pt-5">
+            <h3 className="text-sm font-semibold mb-1">Вопросы брифа</h3>
+            <p className="text-xs text-muted mb-4">
+              Настройте поля до отправки клиенту: добавляйте, удаляйте и меняйте
+              вопросы. После заполнения брифа клиентом редактирование будет
+              недоступно.
+            </p>
+            <BriefFieldEditor fields={briefFields} onChange={setBriefFields} />
           </div>
 
           {error && (
