@@ -48,19 +48,18 @@ function EditableCell({
   async function save(nextValue: string) {
     if (nextValue === String(initialValue ?? "")) return;
 
-    let payload: Record<string, unknown> = {};
-
-    if (field === "dealAmount") {
-      payload.dealAmount = Number(nextValue) || 0;
-    } else if (field === "dealProbability") {
-      payload.dealProbability = Number(nextValue) || 0;
-    } else if (field === "reminderAt") {
-      payload.reminderAt = nextValue
-        ? new Date(nextValue).toISOString()
-        : null;
-    } else {
-      payload[field] = nextValue;
-    }
+    const payload: Record<string, unknown> =
+      field === "dealAmount"
+        ? { dealAmount: Number(nextValue) || 0 }
+        : field === "dealProbability"
+          ? { dealProbability: Number(nextValue) || 0 }
+          : field === "reminderAt"
+            ? {
+                reminderAt: nextValue
+                  ? new Date(nextValue).toISOString()
+                  : null,
+              }
+            : { [field]: nextValue };
 
     await fetch(`/api/projects/${projectId}`, {
       method: "PATCH",

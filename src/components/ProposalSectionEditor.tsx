@@ -1,7 +1,6 @@
 "use client";
 
 import type { ProposalSection } from "@/types";
-import { Button } from "@/components/ui/Button";
 import { FieldWrapper, Input, Textarea, Select } from "@/components/ui/Input";
 
 const SECTION_TYPES: { value: ProposalSection["type"]; label: string }[] = [

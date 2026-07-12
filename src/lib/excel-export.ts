@@ -169,7 +169,7 @@ export function safeExcelFilename(name: string, suffix = "xlsx") {
 }
 
 export function excelResponse(buffer: Buffer, filename: string) {
-  return new Response(buffer, {
+  return new Response(new Uint8Array(buffer), {
     headers: {
       "Content-Type":
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
